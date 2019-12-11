@@ -5,4 +5,4 @@ CREATE TABLE users (
     name TEXT NOT NULL,
     email TEXT NOT NULL,
     date_created TIMESTAMP DEFAULT now() NOT NULL
-);
+)

@@ -18,7 +18,17 @@ const UsersService = {
             .where({ username })
             .first()
             .then(user => !!user)
-    } 
+    } ,
+    getUserById(db, id){
+        return db('users')
+            .where({ id })
+            .first()
+    },
+    deleteUser(db, id){
+        return db('users')
+            .where({ id })
+            .delete()
+    }
 }
 
 

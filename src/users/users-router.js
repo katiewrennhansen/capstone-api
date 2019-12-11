@@ -7,13 +7,14 @@ const bodyParser = express.json()
 usersRouter
     .route('/')
     .get((req, res, next) => {
-        res.send('hit the users route')
+        const db = req.app.get
+
     })
     .post(bodyParser, (req, res, next) => {
         const db = req.app.get('db')
         const { username, password, name, email } = req.body
         const newUser = { username, password, name, email }
-
+        console.log(newUser)
         for (const [key, value] of Object.entries(newUser))
             if(value == null){
                 return res.status(400).json({
@@ -41,6 +42,35 @@ usersRouter
                                 res.status(201).json(user)
                             })
                     })
+            })
+            .catch(next)
+    })
+
+usersRouter
+    .route('/:id')
+    .all((req, res, next) => {
+        const db = req.app.get('db')
+        const id = req.params.id
+        UsersService.getUserById(db, id)
+            .then(user => {
+                if(!user)
+                    res.status(404).json({
+                        error: 'user not found'
+                    })
+                res.user = user
+                next()
+            })
+            .catch(next)
+    })
+    .get((req, res, next) => {
+        res.send(res.user)
+    })
+    .delete((req, res, next) => {
+        const db = req.app.get('db')
+        const id = req.params.id
+        UsersService.deleteUser(db, id)
+            .then(user => {
+                res.status(204).end()
             })
             .catch(next)
     })

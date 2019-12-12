@@ -18,7 +18,7 @@ const UsersService = {
             .where({ username })
             .first()
             .then(user => !!user)
-    } ,
+    },
     getUserById(db, id){
         return db('users')
             .where({ id })

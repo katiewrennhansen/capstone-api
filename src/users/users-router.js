@@ -1,20 +1,29 @@
 const express = require('express')
 const UsersService = require('./users-service')
+const jwtAuth = require('../middleware/jwt-auth')
 
 const usersRouter = express.Router()
 const bodyParser = express.json()
 
 usersRouter
     .route('/')
-    .get((req, res, next) => {
-        const db = req.app.get
-
+    .get(jwtAuth, (req, res, next) => {
+        const db = req.app.get('db')
+        const id = req.user.id
+        UsersService.getUserById(db, id)
+            .then(user => {
+                if(!user)
+                    return res.status(404).json({
+                        error: 'user not found'
+                    })
+                res.json(user)
+            })
+            .catch(next)
     })
     .post(bodyParser, (req, res, next) => {
         const db = req.app.get('db')
         const { username, password, name, email } = req.body
         const newUser = { username, password, name, email }
-        console.log(newUser)
         for (const [key, value] of Object.entries(newUser))
             if(value == null){
                 return res.status(400).json({
@@ -45,12 +54,13 @@ usersRouter
             })
             .catch(next)
     })
+    
 
 usersRouter
     .route('/:id')
-    .all((req, res, next) => {
+    .all(jwtAuth, (req, res, next) => {
         const db = req.app.get('db')
-        const id = req.params.id
+        const id = req.user.id
         UsersService.getUserById(db, id)
             .then(user => {
                 if(!user)
@@ -62,18 +72,16 @@ usersRouter
             })
             .catch(next)
     })
-    .get((req, res, next) => {
-        res.send(res.user)
-    })
     .delete((req, res, next) => {
         const db = req.app.get('db')
-        const id = req.params.id
+        const id = req.user.id
         UsersService.deleteUser(db, id)
             .then(user => {
                 res.status(204).end()
             })
             .catch(next)
     })
+    
 
 
 module.exports = usersRouter

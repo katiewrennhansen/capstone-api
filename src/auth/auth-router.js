@@ -7,16 +7,13 @@ const bodyParser = express.json()
 
 authRouter
     .route('/')
-    .get((req, res, next) => {
-        res.send('you hit the login route')
-    })
     .post(bodyParser, (req, res, next) => {
         const db = req.app.get('db')
         const { username, password } = req.body
         const user = { username, password }
 
         for (const [key, value] of Object.entries(user))
-            if(value == null){
+            if(!value){
                 return res.status(400).json({
                     error: `missing ${key}`
                 })
@@ -37,7 +34,6 @@ authRouter
                         const sub = dbUser.username
                         const payload = { user_id: dbUser.id }
                         res.send({
-                            user: dbUser,
                             token: AuthService.generateJwt(sub, payload)
                         })
                     })

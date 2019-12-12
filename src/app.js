@@ -22,7 +22,7 @@ app.use('/api/users', usersRouter)
 app.use('/api/login', authRouter)
 
 app.get('/', (req, res) => {
-    res.send('Hello, boilerplate!')
+    res.send('Capstone API')
 })
 
 

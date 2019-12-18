@@ -6,6 +6,7 @@ const helmet = require('helmet')
 const { NODE_ENV } = require('./config')
 const usersRouter = require('./users/users-router')
 const authRouter = require('./auth/auth-router')
+const messagesRouter = require('./messages/messages-router')
 
 const app = express()
 
@@ -20,6 +21,7 @@ app.use(cors())
 
 app.use('/api/users', usersRouter)
 app.use('/api/login', authRouter)
+app.use('/api/messages', messagesRouter)
 
 app.get('/', (req, res) => {
     res.send('Capstone API')

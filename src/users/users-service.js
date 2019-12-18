@@ -3,6 +3,10 @@ const jwt = require('jsonwebtoken')
 const config = require('../config')
 
 const UsersService = {
+    // getUsers(db){
+    //     return db('users')
+    //         .select('*')
+    // },
     hashPassword(password){
         return bcrypt.hash(password, 12)
     },
@@ -23,6 +27,11 @@ const UsersService = {
         return db('users')
             .where({ id })
             .first()
+    },
+    updateUser(db, id, updatedUser){
+        return db('users')
+            .where({ id })
+            .update(updatedUser)
     },
     deleteUser(db, id){
         return db('users')

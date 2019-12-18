@@ -7,19 +7,14 @@ const bodyParser = express.json()
 
 usersRouter
     .route('/')
-    .get(jwtAuth, (req, res, next) => {
-        const db = req.app.get('db')
-        const id = req.user.id
-        UsersService.getUserById(db, id)
-            .then(user => {
-                if(!user)
-                    return res.status(404).json({
-                        error: 'user not found'
-                    })
-                res.json(user)
-            })
-            .catch(next)
-    })
+    // .get((req, res, next) => {
+    //     const db = req.app.get('db')
+    //     UsersService.getUsers(db)
+    //         .then(users => {
+    //             res.send(users)
+    //         })
+    //         .catch(next)
+    // })
     .post(bodyParser, (req, res, next) => {
         const db = req.app.get('db')
         const { username, password, name, email } = req.body
@@ -54,10 +49,6 @@ usersRouter
             })
             .catch(next)
     })
-    
-
-usersRouter
-    .route('/:id')
     .all(jwtAuth, (req, res, next) => {
         const db = req.app.get('db')
         const id = req.user.id
@@ -72,15 +63,37 @@ usersRouter
             })
             .catch(next)
     })
-    .delete((req, res, next) => {
+    .get((req, res, next) => {
+        res.send(res.user)
+    })
+    .patch(bodyParser, (req, res, next) => {
         const db = req.app.get('db')
         const id = req.user.id
-        UsersService.deleteUser(db, id)
+        const { name, email } = req.body
+        const updatedUser = { name, email }
+
+        for(const [key, num] of Object.entries(updatedUser))
+            if(num == 0)
+                return res.status(400).json({
+                    error: 'need content'
+                })
+
+        UsersService.updateUser(db, id, updatedUser)
             .then(user => {
-                res.status(204).end()
+                res.status(201).end()
             })
             .catch(next)
     })
+
+    // .delete((req, res, next) => {
+    //     const db = req.app.get('db')
+    //     const id = req.user.id
+    //     UsersService.deleteUser(db, id)
+    //         .then(user => {
+    //             res.status(204).end()
+    //         })
+    //         .catch(next)
+    // })
     
 
 

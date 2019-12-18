@@ -4,7 +4,12 @@ const MessagesService = {
             .from('messages')
             .select('*')
             .where({ sender_id: id })
-            .orWhere({ reciever_id: id })
+    },
+    getNewMessages(db, id){
+        return db
+            .from('messages')
+            .select('*')
+            .where({ reciever_id: id })
     },
     postMessage(db, newMessage){
         return db

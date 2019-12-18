@@ -11,7 +11,7 @@ messagesRouter
     .all(jwtAuth, (req, res, next) => {
         const db = req.app.get('db')
         const id = req.user.id
-        MessagesService.getSentMessages(db, id)
+        MessagesService.getNewMessages(db, id)
             .then(messages => {
                 if(!messages){
                     res.status(404).json({
@@ -22,9 +22,6 @@ messagesRouter
                 next()
             })
             .catch(next)
-    })
-    .get((req, res, next) => {
-        res.send(res.messages)
     })
     .post(bodyParser, (req, res, next) => {
         const db = req.app.get('db')
@@ -40,11 +37,55 @@ messagesRouter
             .catch(next)
     })
 
+
+messagesRouter
+    .route('/new')
+    .all(jwtAuth, (req, res, next) => {
+        const db = req.app.get('db')
+        const id = req.user.id
+        MessagesService.getNewMessages(db, id)
+            .then(messages => {
+                if(!messages){
+                    res.status(404).json({
+                        error: 'messages not found'
+                    })
+                }
+                res.messages = messages
+                next()
+            })
+            .catch(next)
+    })
+    .get((req, res, next) => {
+        res.send(res.messages)
+    })
+
+messagesRouter
+    .route('/sent')
+    .all(jwtAuth, (req, res, next) => {
+        const db = req.app.get('db')
+        const id = req.user.id
+        MessagesService.getSentMessages(db, id)
+            .then(messages => {
+                if(!messages){
+                    res.status(404).json({
+                        error: 'messages not found'
+                    })
+                }
+                res.messages = messages
+                next()
+            })
+            .catch(next)
+    })
+    .get((req, res, next) => {
+        res.send(res.messages)
+    })
+
+
 messagesRouter
     .route('/:id')
     .all(jwtAuth, (req, res, next) => {
         const db = req.app.get('db')
-        const id = req.user.id
+        const id = req.params.id
         MessagesService.getMessageById(db, id)
             .then(message => {
                 if(!message){

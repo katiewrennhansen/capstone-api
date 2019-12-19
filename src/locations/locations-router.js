@@ -20,38 +20,71 @@ locationsRouter
             })
             .catch(next)
     })
+    .all(jwtAuth)
+    .post(bodyParser, (req, res, next) => {
+        const db = req.app.get('db')
+        const { latitude, longitude, description, address, city, state, zip_code } = req.body
+        const id = req.user.id
+        const newLocation = { latitude, longitude, description, address, city, state, zip_code }
+        newLocation.user_id = id
+        
+        LocationsService.postLocation(db, newLocation)
+            .then(location => {
+                res.status(201).end()
+            })
+            .catch(next)
+    })
 
 
-// locationsRouter
-//     .route('/')
-//     .all(jwtAuth, (req, res, next) => {
-//         const db = req.app.get('db')
-//         const id = req.user.id
-//         MessagesService.getNewMessages(db, id)
-//             .then(messages => {
-//                 if(!messages){
-//                     res.status(404).json({
-//                         error: 'messages not found'
-//                     })
-//                 }
-//                 res.messages = messages
-//                 next()
-//             })
-//             .catch(next)
-//     })
-//     .post(bodyParser, (req, res, next) => {
-//         const db = req.app.get('db')
-//         const id = req.user.id
-//         const { subject, body, read, reciever_id } = req.body
-//         const newMessage = { subject, body, read, reciever_id }
-//         newMessage.sender_id = id
+locationsRouter
+    .route('/all')
+    .all(jwtAuth, (req, res, next) => {
+        const db = req.app.get('db')
+        const user_id = req.user.id
+        LocationsService.getLocationsForUser(db, user_id)
+            .then(locations => {
+                if(!locations){
+                    res.status(404).json({
+                        error: 'no locations for this user'
+                    })
+                }
+                res.locations = locations
+                next()
+            })
+            .catch(next)
+    })
+    .get((req, res, next) => {
+        res.send(res.locations)
+    })
 
-//         MessagesService.postMessage(db, newMessage)
-//             .then(message => {
-//                 res.status(201).end(0)
-//             })
-//             .catch(next)
-//     })
+locationsRouter
+    .route('/:id')
+    .all(jwtAuth, (req, res, next) => {
+        const db = req.app.get('db')
+        const id = req.params.id
+        LocationsService.getLocationById(db, id)
+            .then(location => {
+                if(!location){
+                    res.status(404).json({
+                        error: 'no locations for this user'
+                    })
+                }
+                res.location = location
+                next()
+            })
+            .catch(next)
+    })
+    .get((req, res, next) => {
+        res.send(res.location)
+    })
+    .delete((req, res, next) => {
+        const db = req.app.get('db')
+        const id = req.params.id
+        LocationsService.deleteLocation(db, id)
+            .then(location => {
+                res.status(204).end()
+            })
+    })
 
 
 

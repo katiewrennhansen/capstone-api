@@ -5,5 +5,9 @@ CREATE TABLE locations (
     user_id INTEGER REFERENCES users(id)  
         ON DELETE SET NULL,
     description TEXT NOT NULL,
+    address TEXT NOT NULL,
+    city TEXT NOT NULL,
+    state TEXT NOT NULL,
+    zip_code TEXT NOT NULL,
     date_created TIMESTAMP DEFAULT now() NOT NULL
 )

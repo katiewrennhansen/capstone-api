@@ -4,6 +4,7 @@ const MessagesService = {
             .from('messages')
             .select('*')
             .where({ sender_id: id })
+            .innerJoin('users', 'messages.reciever_id', 'users.id')
     },
     getNewMessages(db, id){
         return db
@@ -26,6 +27,11 @@ const MessagesService = {
         return db('messages')
             .where({ id })
             .first()
+    },
+    deleteMessage(db, id){
+        return db('messages')
+            .where({ id })
+            .delete()
     }
 }
 

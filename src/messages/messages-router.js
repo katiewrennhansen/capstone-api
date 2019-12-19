@@ -1,7 +1,7 @@
 const express = require('express')
 const jwtAuth = require('../middleware/jwt-auth')
 const MessagesService = require('./messages-service')
-
+const UsersService = require('../users/users-service')
 const bodyParser = express.json()
 const messagesRouter = express.Router()
 
@@ -26,13 +26,15 @@ messagesRouter
     .post(bodyParser, (req, res, next) => {
         const db = req.app.get('db')
         const id = req.user.id
+        const name = req.user.name
         const { subject, body, read, reciever_id } = req.body
         const newMessage = { subject, body, read, reciever_id }
         newMessage.sender_id = id
+        newMessage.name = name
 
         MessagesService.postMessage(db, newMessage)
             .then(message => {
-                res.status(201).end(0)
+                res.status(201).end()
             })
             .catch(next)
     })
@@ -118,6 +120,14 @@ messagesRouter
                 res.status(204).end()
             })
             .catch(next)
+    })
+    .delete((req, res, next) => {
+        const db = req.app.get('db')
+        const id = req.params.id
+        MessagesService.deleteMessage(db, id)
+            .then(message => {
+                res.status(204).end()
+            })
     })
 
 

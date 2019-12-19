@@ -7,14 +7,6 @@ const bodyParser = express.json()
 
 usersRouter
     .route('/')
-    // .get((req, res, next) => {
-    //     const db = req.app.get('db')
-    //     UsersService.getUsers(db)
-    //         .then(users => {
-    //             res.send(users)
-    //         })
-    //         .catch(next)
-    // })
     .post(bodyParser, (req, res, next) => {
         const db = req.app.get('db')
         const { username, password, name, email } = req.body
@@ -94,6 +86,27 @@ usersRouter
     //         })
     //         .catch(next)
     // })
+
+usersRouter
+    .route('/:id')
+    .all(jwtAuth, (req, res, next) => {
+        const db = req.app.get('db')
+        const id = req.params.id
+        UsersService.getUserById(db, id)
+            .then(user => {
+                if(!user)
+                    res.status(404).json({
+                        error: 'user not found'
+                    })
+                res.user = user
+                next()
+            })
+            .catch(next)
+    })
+    .get((req, res, next) => {
+        res.send(res.user)
+    })
+    
     
 
 

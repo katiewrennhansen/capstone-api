@@ -77,6 +77,29 @@ locationsRouter
     .get((req, res, next) => {
         res.send(res.location)
     })
+    .patch(bodyParser, (req, res, next) => {
+        const db = req.app.get('db')
+        const id = req.params.id
+        console.log(id)
+        const { latitude, longitude, description, address, city, state, zip_code } = req.body
+        const user_id = req.user.id
+        const updatedLocation = { latitude, longitude, description, address, city, state, zip_code }
+        updatedLocation.user_id = user_id
+        console.log(updatedLocation)
+
+        for (const [key, num] of Object.entries(updatedLocation))
+            if(num == 0)
+                return res.status(400).json({
+                    error: 'need content'
+                })
+
+        LocationsService.updateLocation(db, id, updatedLocation)
+            .then(location => {
+                res.status(201).end()
+            })
+            .catch(next)
+
+    })
     .delete((req, res, next) => {
         const db = req.app.get('db')
         const id = req.params.id
@@ -84,6 +107,7 @@ locationsRouter
             .then(location => {
                 res.status(204).end()
             })
+            .catch(next)
     })
 
 

@@ -30,7 +30,6 @@ messagesRouter
         const { subject, body, read, reciever_id } = req.body
         const newMessage = { subject, body, read, reciever_id }
         newMessage.sender_id = id
-        newMessage.name = name
 
         MessagesService.postMessage(db, newMessage)
             .then(message => {

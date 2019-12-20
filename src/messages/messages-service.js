@@ -9,8 +9,9 @@ const MessagesService = {
     getNewMessages(db, id){
         return db
             .from('messages')
-            .select('*')
+            .select('messages.*', 'users.name')
             .where({ reciever_id: id })
+            .leftJoin('users', 'messages.sender_id', 'users.id')
     },
     postMessage(db, newMessage){
         return db
@@ -24,9 +25,12 @@ const MessagesService = {
             .update(updatedMessage)
     },
     getMessageById(db, id){
-        return db('messages')
-            .where({ id })
+        return db
+            .from('messages')
+            .where({ 'messages.id': id })
             .first()
+            .select('messages.*', 'users.name')
+            .leftJoin('users', 'messages.sender_id', 'users.id')
     },
     deleteMessage(db, id){
         return db('messages')

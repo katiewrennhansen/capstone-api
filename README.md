@@ -1,6 +1,6 @@
-# Capstone Project
+# Compostable API
 
-This project contains the Authentication Structure for my Capstone Project
+Back-End code for crowdsourced application to help connect urban people hoping to compost with local composts.
 
 
 ## Scripts

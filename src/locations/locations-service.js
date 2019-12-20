@@ -2,8 +2,8 @@ const LocationsService = {
     getAllLocations(db){
         return db
             .from('locations')
-            .select('*')
-            .innerJoin('users', 'locations.user_id', 'users.id')
+            .select('locations.*', 'users.name')
+            .leftJoin('users', 'locations.user_id', 'users.id')
     },
     getLocationById(db, id){
         return db

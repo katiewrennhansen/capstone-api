@@ -2,9 +2,9 @@ const MessagesService = {
     getSentMessages(db, id){
         return db
             .from('messages')
-            .select('*')
+            .select('messages.*', 'users.name')
             .where({ sender_id: id })
-            .innerJoin('users', 'messages.reciever_id', 'users.id')
+            .leftJoin('users', 'messages.reciever_id', 'users.id')
     },
     getNewMessages(db, id){
         return db

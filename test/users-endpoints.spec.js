@@ -1,13 +1,11 @@
 const app = require('../src/app')
 const knex = require('knex')
-const jwt = require('jsonwebtoken')
 const helpers = require('./test-helpers')
 
 describe('USERS ENDPOINTS', () => {
     let db
 
     const testUsers = helpers.makeUsersArray()
-    const testUser = testUsers[0]
 
     before('make knex instance', () => {
         db = knex({
@@ -19,6 +17,9 @@ describe('USERS ENDPOINTS', () => {
 
     after('disconnect from db', () => db.destroy())
 
+    before('cleanup', () => helpers.cleanTables(db))
+
+    afterEach('cleanup', () => helpers.cleanTables(db))
 
     describe('POST /api/users', () => {
         beforeEach('insert users', () => {
@@ -27,7 +28,7 @@ describe('USERS ENDPOINTS', () => {
 
         it('responds with 201 on successful post user', () => {
             const newUser = {
-                username: 'newtestusername',
+                username: 'new',
                 password: 'passypassword',
                 name: 'Test User',
                 email: 'testytest@email.com'
@@ -36,7 +37,7 @@ describe('USERS ENDPOINTS', () => {
             return supertest(app)
                 .post('/api/users')
                 .send(newUser)
-                .expect(201)
+                .expect(201) 
         })
         
     })

@@ -19,6 +19,9 @@ describe('AUTH ENDPOINTS', () => {
 
     after('disconnect from db', () => db.destroy())
 
+    before('cleanup', () => helpers.cleanTables(db))
+
+    afterEach('cleanup', () => helpers.cleanTables(db))
 
     describe('POST /api/login', () => {
         beforeEach('insert users', () => {

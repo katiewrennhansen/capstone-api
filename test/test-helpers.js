@@ -42,14 +42,19 @@ function seedUsers(db, users){
         .returning('*')
 }
 
-
-
-
-
+function cleanTables(db) {
+  return db.transaction(trx =>
+    trx.raw(
+      `TRUNCATE
+        users
+      `
+    ))
+}
 
 
 module.exports = {
     makeUsersArray,
-    seedUsers
+    seedUsers,
+    cleanTables
 
 }

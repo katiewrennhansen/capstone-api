@@ -11,6 +11,12 @@ const LocationsService = {
             .select('*')
             .where({ id })
     },
+    getLocationsForUser(db, user_id){
+        return db
+            .from('locations')
+            .select('*')
+            .where({ user_id })
+    },
     postLocation(db, newLocation){
         return db
             .insert(newLocation)
@@ -21,12 +27,6 @@ const LocationsService = {
         return db('locations')
             .where({ id })
             .update(updatedLocation)
-    },
-    getLocationsForUser(db, user_id){
-        return db
-            .from('locations')
-            .select('*')
-            .where({ user_id })
     },
     deleteLocation(db, id){
         return db('locations')

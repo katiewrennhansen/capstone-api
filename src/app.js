@@ -26,7 +26,7 @@ app.use('/api/messages', messagesRouter)
 app.use('/api/locations', locationsRouter)
 
 app.get('/', (req, res) => {
-    res.send('Capstone API')
+    res.send('Welcome to the Compostable API')
 })
 
 

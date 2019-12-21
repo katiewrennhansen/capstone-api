@@ -11,6 +11,7 @@ usersRouter
         const db = req.app.get('db')
         const { username, password, name, email } = req.body
         const newUser = { username, password, name, email }
+        
         for (const [key, value] of Object.entries(newUser))
             if(value == null){
                 return res.status(400).json({
@@ -22,7 +23,7 @@ usersRouter
             .then(user => {
                 if(user){
                     return res.status(400).json({
-                        error: 'username taken'
+                        error: 'That username has already been taken'
                     })
                 }
                 return UsersService.hashPassword(newUser.password)
@@ -76,16 +77,6 @@ usersRouter
             })
             .catch(next)
     })
-
-    // .delete((req, res, next) => {
-    //     const db = req.app.get('db')
-    //     const id = req.user.id
-    //     UsersService.deleteUser(db, id)
-    //         .then(user => {
-    //             res.status(204).end()
-    //         })
-    //         .catch(next)
-    // })
 
 usersRouter
     .route('/:id')

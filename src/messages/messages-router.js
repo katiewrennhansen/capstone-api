@@ -1,7 +1,7 @@
 const express = require('express')
 const jwtAuth = require('../middleware/jwt-auth')
 const MessagesService = require('./messages-service')
-const UsersService = require('../users/users-service')
+
 const bodyParser = express.json()
 const messagesRouter = express.Router()
 
@@ -26,7 +26,6 @@ messagesRouter
     .post(bodyParser, (req, res, next) => {
         const db = req.app.get('db')
         const id = req.user.id
-        const name = req.user.name
         const { subject, body, read, reciever_id } = req.body
         const newMessage = { subject, body, read, reciever_id }
         newMessage.sender_id = id
@@ -48,7 +47,7 @@ messagesRouter
             .then(messages => {
                 if(!messages){
                     res.status(404).json({
-                        error: 'messages not found'
+                        error: 'No new messages'
                     })
                 }
                 res.messages = messages
@@ -69,7 +68,7 @@ messagesRouter
             .then(messages => {
                 if(!messages){
                     res.status(404).json({
-                        error: 'messages not found'
+                        error: 'No sent messages'
                     })
                 }
                 res.messages = messages
@@ -91,7 +90,7 @@ messagesRouter
             .then(message => {
                 if(!message){
                     res.status(404).json({
-                        error: 'messages not found'
+                        error: 'Message not found'
                     })
                 }
                 res.message = message
@@ -128,7 +127,6 @@ messagesRouter
                 res.status(204).end()
             })
     })
-
 
 
 module.exports = messagesRouter

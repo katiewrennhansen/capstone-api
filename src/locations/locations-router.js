@@ -80,12 +80,10 @@ locationsRouter
     .patch(bodyParser, (req, res, next) => {
         const db = req.app.get('db')
         const id = req.params.id
-        console.log(id)
         const { latitude, longitude, description, address, city, state, zip_code } = req.body
         const user_id = req.user.id
         const updatedLocation = { latitude, longitude, description, address, city, state, zip_code }
         updatedLocation.user_id = user_id
-        console.log(updatedLocation)
 
         for (const [key, num] of Object.entries(updatedLocation))
             if(num == 0)
@@ -109,7 +107,6 @@ locationsRouter
             })
             .catch(next)
     })
-
 
 
 module.exports = locationsRouter;
